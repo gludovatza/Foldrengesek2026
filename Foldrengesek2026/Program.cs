@@ -1,3 +1,6 @@
+using Foldrengesek2026.Data;
+using Microsoft.EntityFrameworkCore;
+
 namespace Foldrengesek2026
 {
     public class Program
@@ -8,6 +11,9 @@ namespace Foldrengesek2026
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+
+            builder.Services.AddDbContext<FoldrengesContext>(options =>
+                options.UseMySQL(builder.Configuration.GetConnectionString("DefaultConnection")!));
 
             var app = builder.Build();
 
