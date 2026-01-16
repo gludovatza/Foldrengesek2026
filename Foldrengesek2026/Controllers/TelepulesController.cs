@@ -20,7 +20,7 @@ namespace Foldrengesek2026.Controllers
         }
 
         // GET: Telepules
-        public async Task<IActionResult> Index(string? nev, string? varmegye)
+        public async Task<IActionResult> Index(string? nev, string? varmegye, int page = 1)
         {
             var telepulesek = _context.Telepulesek.AsQueryable();
 
@@ -40,7 +40,21 @@ namespace Foldrengesek2026.Controllers
                 ViewData["AktualisVarmegyeSzuro"] = varmegye;
             }
 
-            return View(await telepulesek.ToListAsync());
+            int pageSize = 10; // ennyi elem egy oldalon
+
+            int totalCount = await telepulesek.CountAsync();
+            var items = await telepulesek
+                .OrderBy(p => p.Nev)   // ⚠️ lapozásnál KÖTELEZŐ rendezni
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            ViewData["CurrentPage"] = page;
+            ViewData["TotalPages"] = (int)Math.Ceiling(totalCount / (double)pageSize);
+
+            ViewData["TotalCount"] = totalCount;
+
+            return View(items);
         }
 
         // GET: Telepules/Details/5

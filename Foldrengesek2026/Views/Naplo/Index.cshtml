@@ -2,6 +2,11 @@
 
 @{
     ViewData["Title"] = "Index";
+
+    int currentPage = (int)ViewData["CurrentPage"]!;
+    int totalPages = (int)ViewData["TotalPages"]!;
+
+    int totalCount = (int)ViewData["TotalCount"]!;
 }
 
 <h1>Index</h1>
@@ -21,6 +26,49 @@
         <input type="submit" value="Keresés" class="btn btn-primary" />
     </p>
 </form>
+<p>Összesen: <strong>@totalCount</strong> találat.</p>
+<nav>
+    <ul class="pagination">
+        @if (currentPage > 1)
+        {
+            <li class="page-item">
+                <a class="page-link"
+                   asp-action="Index"
+                   asp-route-page="@(currentPage - 1)"
+                   asp-route-datum="@ViewData["AktualisDatumSzuro"]"
+                   asp-route-telepulesid="@ViewBag.TelepulesID">
+                    Előző
+                </a>
+            </li>
+        }
+
+        @for (int i = 1; i <= totalPages; i++)
+        {
+            <li class="page-item @(i == currentPage ? "active" : "")">
+                <a class="page-link"
+                   asp-action="Index"
+                   asp-route-page="@i"
+                   asp-route-datum="@ViewData["AktualisDatumSzuro"]"
+                   asp-route-telepulesid="@ViewBag.TelepulesID">
+                    @i
+                </a>
+            </li>
+        }
+
+        @if (currentPage < totalPages)
+        {
+            <li class="page-item">
+                <a class="page-link"
+                   asp-action="Index"
+                   asp-route-page="@(currentPage + 1)"
+                   asp-route-datum="@ViewData["AktualisDatumSzuro"]"
+                   asp-route-telepulesid="@ViewBag.TelepulesID">
+                    Következő
+                </a>
+            </li>
+        }
+    </ul>
+</nav>
 
 <table class="table">
     <thead>
