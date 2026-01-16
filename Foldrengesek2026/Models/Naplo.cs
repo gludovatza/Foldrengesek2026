@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Foldrengesek2026.Models
 {
@@ -15,10 +16,12 @@ namespace Foldrengesek2026.Models
         public TimeSpan Ido { get; set; }
         [Required]
         [Display(Name = "Magnitúdó")]
-        public double Magnitudo { get; set; }
+        [Column(TypeName = "decimal(4, 2)")]
+        public decimal Magnitudo { get; set; }
         [Required]
         [Display(Name = "Intenzitás")]
-        public double Intenzitas { get; set; }
+        [Column(TypeName = "decimal(4, 2)")]
+        public decimal Intenzitas { get; set; }
 
         // FK + navigáció
         [Required]

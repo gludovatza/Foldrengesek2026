@@ -51,4 +51,12 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+    <script>
+        // hu-HU: tizedesvessző kezelése a jQuery Validate-ben
+        // Elfogad: 1,1 | -12,34 stb.
+        $.validator.methods.number = function (value, element) {
+            return this.optional(element) || /^-?\d+(?:[,]\d+)?$/.test(value);
+        };
+    </script>
 }
