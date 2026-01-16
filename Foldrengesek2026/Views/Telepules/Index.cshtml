@@ -7,6 +7,22 @@
     int totalPages = (int)ViewData["TotalPages"]!;
 
     int totalCount = (int)ViewData["TotalCount"]!;
+
+    string ToggleDir(string column)
+    => (ViewData["CurrentSort"]?.ToString() == column &&
+        ViewData["CurrentDir"]?.ToString() == "asc")
+       ? "desc"
+       : "asc";
+
+    string SortIcon(string column)
+    {
+        if (ViewData["CurrentSort"]?.ToString() != column)
+            return "";
+
+        return ViewData["CurrentDir"]?.ToString() == "asc"
+            ? " ▲"
+            : " ▼";
+    }
 }
 
 <h1>Index</h1>
@@ -32,7 +48,9 @@
                    asp-action="Index"
                    asp-route-page="@(currentPage - 1)"
                    asp-route-nev="@ViewData["AktualisNevSzuro"]"
-                   asp-route-varmegye="@ViewData["AktualisVarmegyeSzuro"]">
+                   asp-route-varmegye="@ViewData["AktualisVarmegyeSzuro"]"
+                   asp-route-sort="@ViewData["CurrentSort"]"
+                   asp-route-dir="@ViewData["CurrentDir"]">
                     Előző
                 </a>
             </li>
@@ -45,7 +63,9 @@
                    asp-action="Index"
                    asp-route-page="@i"
                    asp-route-nev="@ViewData["AktualisNevSzuro"]"
-                   asp-route-varmegye="@ViewData["AktualisVarmegyeSzuro"]">
+                   asp-route-varmegye="@ViewData["AktualisVarmegyeSzuro"]"
+                   asp-route-sort="@ViewData["CurrentSort"]"
+                   asp-route-dir="@ViewData["CurrentDir"]">
                     @i
                 </a>
             </li>
@@ -58,7 +78,9 @@
                    asp-action="Index"
                    asp-route-page="@(currentPage + 1)"
                    asp-route-nev="@ViewData["AktualisNevSzuro"]"
-                   asp-route-varmegye="@ViewData["AktualisVarmegyeSzuro"]">
+                   asp-route-varmegye="@ViewData["AktualisVarmegyeSzuro"]"
+                   asp-route-sort="@ViewData["CurrentSort"]"
+                   asp-route-dir="@ViewData["CurrentDir"]">
                     Következő
                 </a>
             </li>
@@ -70,10 +92,24 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Nev)
+                <a asp-action="Index"
+                   asp-route-page="@currentPage"
+                   asp-route-nev="@ViewData["AktualisNevSzuro"]"
+                   asp-route-varmegye="@ViewData["AktualisVarmegyeSzuro"]"
+                   asp-route-sort="nev"
+                   asp-route-dir="@ToggleDir("nev")">
+                    @Html.DisplayNameFor(model => model.Nev) @SortIcon("nev")
+                </a>
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Varmegye)
+                <a asp-action="Index"
+                   asp-route-page="@currentPage"
+                   asp-route-nev="@ViewData["AktualisNevSzuro"]"
+                   asp-route-varmegye="@ViewData["AktualisVarmegyeSzuro"]"
+                   asp-route-sort="varmegye"
+                   asp-route-dir="@ToggleDir("varmegye")">
+                    @Html.DisplayNameFor(model => model.Varmegye) @SortIcon("varmegye")
+                </a>
             </th>
             <th></th>
         </tr>
