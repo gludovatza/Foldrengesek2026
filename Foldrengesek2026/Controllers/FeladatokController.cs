@@ -34,5 +34,31 @@ namespace Foldrengesek2026.Controllers
 
             return View(results);
         }
+
+        // SELECT varmegye, COUNT(*)
+        // FROM telepulesek
+        // INNER JOIN naplok ON naplok.telepulesid = telepulesek.id
+        // GROUP BY varmegye
+        // ORDER BY COUNT(*) DESC
+        public IActionResult Feladat3()
+        {
+            var results = _context.Telepulesek
+                .Join(_context.Naplok,
+                        telepules => telepules.ID,
+                        naplo => naplo.TelepulesID,
+                        (telepules, naplo) => new
+                        {
+                            telepules.Varmegye
+                        })
+                .GroupBy(t => t.Varmegye)
+                .Select(g => new Feladat3ViewModel
+                {
+                    Varmegye = g.Key, // a mező, ami szerint csoportosítva van: Varmegye
+                    Count = g.Count()
+                })
+                .OrderByDescending(t => t.Count);
+
+            return View(results);
+        }
     }
 }
