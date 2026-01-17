@@ -20,7 +20,7 @@ namespace Foldrengesek2026.Controllers
         }
 
         // GET: Naplo
-        public async Task<IActionResult> Index(DateTime? datum, int? telepulesid, int page = 1)
+        public async Task<IActionResult> Index(DateTime? datum, int? telepulesid, int page = 1, string sort = "nev", string dir = "asc")
         {
             var foldrengesek = _context.Naplok.Include(n => n.Telepules).AsQueryable();
 
@@ -45,11 +45,26 @@ namespace Foldrengesek2026.Controllers
                 telepulesid ?? 0
             );
 
+            foldrengesek = (sort, dir) switch
+            {
+                ("datum", "desc") => foldrengesek.OrderByDescending(p => p.Datum),
+                ("intenzitas", "asc") => foldrengesek.OrderBy(p => p.Intenzitas),
+                ("intenzitas", "desc") => foldrengesek.OrderByDescending(p => p.Intenzitas),
+                ("magnitudo", "asc") => foldrengesek.OrderBy(p => p.Magnitudo),
+                ("magnitudo", "desc") => foldrengesek.OrderByDescending(p => p.Magnitudo),
+                ("telepulesnev", "asc") => foldrengesek.OrderBy(p => p.Telepules!.Nev),
+                ("telepulesnev", "desc") => foldrengesek.OrderByDescending(p => p.Telepules!.Nev),
+                _ => foldrengesek.OrderBy(p => p.Datum)
+            };
+
+            ViewData["CurrentSort"] = sort;
+            ViewData["CurrentDir"] = dir;
+
             int pageSize = 10; // ennyi elem egy oldalon
 
             int totalCount = await foldrengesek.CountAsync();
             var items = await foldrengesek
-                .OrderBy(p => p.Datum)   // ⚠️ lapozásnál KÖTELEZŐ rendezni
+                //.OrderBy(p => p.Datum)   // ⚠️ lapozásnál KÖTELEZŐ rendezni
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize)
                 .ToListAsync();
