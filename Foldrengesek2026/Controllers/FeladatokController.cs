@@ -60,5 +60,44 @@ namespace Foldrengesek2026.Controllers
 
             return View(results);
         }
+
+
+
+        // SELECT nev, datum, ido, magnitudo
+        // FROM naplok
+        // INNER JOIN telepulesek ON telepulesek.id = naplok.telepulesid
+        // ORDER BY magnitudo DESC
+        // LIMIT 1
+        public IActionResult Feladat4()
+        {
+            var result = _context.Telepulesek
+                .Join(_context.Naplok,
+                        telepules => telepules.ID,
+                        naplo => naplo.TelepulesID,
+                        (telepules, naplo) => new Feladat4ViewModel
+                        {
+                            Nev = telepules.Nev,
+                            Datum = naplo.Datum,
+                            Ido = naplo.Ido,
+                            Magnitudo = naplo.Magnitudo
+                        })
+                .OrderByDescending(j => j.Magnitudo)
+                .FirstOrDefault();
+
+            //// Alternatíva: Mivel a két Model osztály között van kapcsolat, ezért a Join helyett használható Include is
+            //var result = _context.Naplok
+            //    .Include(n => n.Telepules)
+            //    .OrderByDescending(j => j.Magnitudo)
+            //    .Select(n => new Feladat4ViewModel
+            //    {
+            //        Nev = n.Telepules!.Nev,
+            //        Datum = n.Datum,
+            //        Ido = n.Ido,
+            //        Magnitudo = n.Magnitudo
+            //    })
+            //    .FirstOrDefault();
+
+            return View(result);
+        }
     }
 }
