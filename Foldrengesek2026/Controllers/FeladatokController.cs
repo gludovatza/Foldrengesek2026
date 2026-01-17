@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Mysqlx.Crud;
 using Org.BouncyCastle.Asn1.X509;
+using System.Text.RegularExpressions;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Foldrengesek2026.Controllers
@@ -124,5 +125,26 @@ namespace Foldrengesek2026.Controllers
             return View(results);
         }
 
+        // SELECT YEAR(datum), COUNT(*)
+        // FROM naplok
+        // WHERE intenzitas > 3.0
+        // GROUP BY YEAR(datum)
+        // ORDER BY COUNT(*) DESC
+        // LIMIT 3
+        public IActionResult Feladat6()
+        {
+            var results = _context.Naplok
+                .Where(n => n.Intenzitas > 3)
+                .GroupBy(n => n.Datum.Year)
+                .Select(g => new Feladat6ViewModel
+                {
+                    Year = g.Key,
+                    Count = g.Count()
+                })
+                .OrderByDescending(g => g.Count)
+                .Take(3);
+
+            return View(results);
+        }
     }
 }
