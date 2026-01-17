@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Mysqlx.Crud;
 using Org.BouncyCastle.Asn1.X509;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Foldrengesek2026.Controllers
 {
@@ -99,5 +100,29 @@ namespace Foldrengesek2026.Controllers
 
             return View(result);
         }
+
+        // SELECT nev, datum, intenzitas
+        // FROM telepulesek
+        // INNER JOIN naplok ON naplok.telepulesid = telepulesek.id
+        // WHERE YEAR(datum) = 2022 AND intenzitas BETWEEN 2.0 AND 3.0
+        // ORDER BY datum
+        public IActionResult Feladat5()
+        {
+            var results = _context.Telepulesek
+                .Join(_context.Naplok,
+                        telepules => telepules.ID,
+                        naplo => naplo.TelepulesID,
+                        (telepules, naplo) => new Feladat5ViewModel
+                        {
+                            Nev = telepules.Nev,
+                            Datum = naplo.Datum,
+                            Intenzitas = naplo.Intenzitas
+                        })
+                .Where(j => j.Datum.Year == 2022 && j.Intenzitas >= 2 && j.Intenzitas <= 3)
+                .OrderBy(j => j.Datum);
+
+            return View(results);
+        }
+
     }
 }
