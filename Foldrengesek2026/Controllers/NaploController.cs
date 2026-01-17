@@ -20,7 +20,7 @@ namespace Foldrengesek2026.Controllers
         }
 
         // GET: Naplo
-        public async Task<IActionResult> Index(DateTime? datum, int? telepulesid, int page = 1, string sort = "nev", string dir = "asc")
+        public async Task<IActionResult> Index(DateTime? datum, int? telepulesid, int page = 1, string sort = "datum", string dir = "asc")
         {
             var foldrengesek = _context.Naplok.Include(n => n.Telepules).AsQueryable();
 
