@@ -12,8 +12,8 @@ A feladat magyarországi, **1995–2020** közötti kiindulású földrengések 
 
 ## Cél
 
-1. Hozz létre egy `renges` nevű adatbázist. (Megjegyzés: nálam az adatbázis neve inkább: )
-2. Importáld a két szövegfájlt `naplo` és `telepules` táblákba. (Megjegyzés: az ASP.NET Core MVC névkonvenciói miatt naplok és telepulesek táblaneveket adok meg.) 
+1. Hozz létre egy `renges` nevű adatbázist. (Megjegyzés: nálam az adatbázis neve inkább: `foldrengesek2026db`)
+2. Importáld a két szövegfájlt `naplo` és `telepules` táblákba. (Megjegyzés: az ASP.NET Core MVC névkonvenciói miatt `naplok` és `telepulesek` táblaneveket adok meg.) 
 3. Állítsd be a megfelelő adattípusokat és elsődleges kulcsokat.
 4. Készítsd el a feladatban kért lekérdezéseket, és mentsd el őket a megadott neveken.
 
