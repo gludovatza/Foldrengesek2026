@@ -43,26 +43,10 @@ namespace Foldrengesek2026.Controllers
         // ORDER BY COUNT(*) DESC
         public IActionResult Feladat3()
         {
-            var results = _context.Telepulesek
-                .Join(_context.Naplok,
-                        telepules => telepules.ID,
-                        naplo => naplo.TelepulesID,
-                        (telepules, naplo) => new
-                        {
-                            telepules.Varmegye
-                        })
-                .GroupBy(t => t.Varmegye)
-                .Select(g => new Feladat3ViewModel
-                {
-                    Varmegye = g.Key, // a mező, ami szerint csoportosítva van: Varmegye
-                    Count = g.Count()
-                })
-                .OrderByDescending(t => t.Count);
+            var results = _queries.VarmegyeiRengesSzamok();
 
             return View(results);
         }
-
-
 
         // SELECT nev, datum, ido, magnitudo
         // FROM naplok

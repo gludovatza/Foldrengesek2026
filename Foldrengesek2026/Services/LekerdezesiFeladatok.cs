@@ -1,4 +1,5 @@
 ﻿using Foldrengesek2026.Data;
+using Foldrengesek2026.ViewModels;
 
 namespace Foldrengesek2026.Services
 {
@@ -12,5 +13,19 @@ namespace Foldrengesek2026.Services
                 .Where(t => t.Varmegye == "Somogy")
                 .OrderBy(t => t.Nev)
                 .Select(t => t.Nev);
+
+        public IQueryable<Feladat3ViewModel> VarmegyeiRengesSzamok()
+            => _context.Telepulesek
+               .Join(_context.Naplok,
+                   telepules => telepules.ID,
+                   naplo => naplo.TelepulesID,
+                   (telepules, naplo) => new { telepules.Varmegye })
+               .GroupBy(x => x.Varmegye)
+               .Select(g => new Feladat3ViewModel
+               {
+                   Varmegye = g.Key,
+                   Count = g.Count()
+               })
+               .OrderByDescending(x => x.Count);
     }
 }
