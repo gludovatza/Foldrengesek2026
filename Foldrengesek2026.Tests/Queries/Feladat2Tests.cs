@@ -1,6 +1,5 @@
-﻿using Foldrengesek2026.Controllers;
-using Foldrengesek2026.Models;
-using Microsoft.AspNetCore.Mvc;
+﻿using Foldrengesek2026.Models;
+using Foldrengesek2026.Services;
 
 namespace Foldrengesek2026.Tests.Queries;
 
@@ -20,19 +19,12 @@ public class Feladat2Tests
         );
         ctx.SaveChanges();
 
-        var controller = new FeladatokController(ctx);
+        var service = new LekerdezesiFeladatok(ctx);
 
         // Act
-        var result = controller.Feladat2() as ViewResult;
-
-        // Assert – ViewResult
-        // "0." Az eredmény nem null
-        Assert.NotNull(result);
-
-        var model = Assert.IsAssignableFrom<IEnumerable<string>>(result!.Model);
-
-        var list = model.ToList();
-
+        var list = service.SomogyTelepulesNevek().ToList();
+        
+        // Assert
         // 1️. Csak Somogy
         Assert.DoesNotContain("Szekszárd", list);
 
