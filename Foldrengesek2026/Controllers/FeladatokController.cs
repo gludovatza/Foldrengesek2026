@@ -1,5 +1,5 @@
 ﻿using Foldrengesek2026.Data;
-using Foldrengesek2026.Models;
+using Foldrengesek2026.Services;
 using Foldrengesek2026.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -13,10 +13,12 @@ namespace Foldrengesek2026.Controllers
     public class FeladatokController : Controller
     {
         private readonly FoldrengesContext _context;
+        private readonly ILekerdezesiFeladatok _queries;
 
-        public FeladatokController(FoldrengesContext context)
+        public FeladatokController(FoldrengesContext context, ILekerdezesiFeladatok queries)
         {
             _context = context;
+            _queries = queries;
         }
         public IActionResult Index()
         {
@@ -29,10 +31,7 @@ namespace Foldrengesek2026.Controllers
         // ORDER BY nev
         public IActionResult Feladat2()
         {
-            var results = _context.Telepulesek
-                .Where(t => t.Varmegye == "Somogy")
-                .OrderBy(t => t.Nev)
-                .Select(t => t.Nev);
+            var results = _queries.SomogyTelepulesNevek();
 
             return View(results);
         }

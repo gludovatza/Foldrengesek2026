@@ -1,4 +1,5 @@
 using Foldrengesek2026.Data;
+using Foldrengesek2026.Services;
 using Microsoft.EntityFrameworkCore;
 
 namespace Foldrengesek2026
@@ -14,6 +15,8 @@ namespace Foldrengesek2026
 
             builder.Services.AddDbContext<FoldrengesContext>(options =>
                 options.UseMySQL(builder.Configuration.GetConnectionString("DefaultConnection")!));
+
+            builder.Services.AddScoped<ILekerdezesiFeladatok, LekerdezesiFeladatok>();
 
             var app = builder.Build();
 
