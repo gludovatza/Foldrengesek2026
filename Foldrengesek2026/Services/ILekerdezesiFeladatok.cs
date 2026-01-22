@@ -4,7 +4,8 @@ namespace Foldrengesek2026.Services
 {
     public interface ILekerdezesiFeladatok
     {
-        IQueryable<string> SomogyTelepulesNevek();
-        IQueryable<Feladat3ViewModel> VarmegyeiRengesSzamok();
+        IQueryable<string> SomogyTelepulesNevek(); // Feladat2
+        IQueryable<Feladat3ViewModel> VarmegyeiRengesSzamok(); // Feladat3
+        Feladat4ViewModel? LegnagyobbMagnitudo(); // Feladat4
     }
 }

@@ -55,19 +55,7 @@ namespace Foldrengesek2026.Controllers
         // LIMIT 1
         public IActionResult Feladat4()
         {
-            var result = _context.Telepulesek
-                .Join(_context.Naplok,
-                        telepules => telepules.ID,
-                        naplo => naplo.TelepulesID,
-                        (telepules, naplo) => new Feladat4ViewModel
-                        {
-                            Nev = telepules.Nev,
-                            Datum = naplo.Datum,
-                            Ido = naplo.Ido,
-                            Magnitudo = naplo.Magnitudo
-                        })
-                .OrderByDescending(j => j.Magnitudo)
-                .FirstOrDefault();
+            var result = _queries.LegnagyobbMagnitudo();
 
             //// Alternatíva: Mivel a két Model osztály között van kapcsolat, ezért a Join helyett használható Include is
             //var result = _context.Naplok

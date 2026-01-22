@@ -27,5 +27,22 @@ namespace Foldrengesek2026.Services
                    Count = g.Count()
                })
                .OrderByDescending(x => x.Count);
+
+        public Feladat4ViewModel? LegnagyobbMagnitudo()
+        {
+            return _context.Telepulesek
+                .Join(_context.Naplok,
+                    telepules => telepules.ID,
+                    naplo => naplo.TelepulesID,
+                    (telepules, naplo) => new Feladat4ViewModel
+                    {
+                        Nev = telepules.Nev,
+                        Datum = naplo.Datum,
+                        Ido = naplo.Ido,
+                        Magnitudo = naplo.Magnitudo
+                    })
+                .OrderByDescending(x => x.Magnitudo)
+                .FirstOrDefault();
+        }
     }
 }
