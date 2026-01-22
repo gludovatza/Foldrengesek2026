@@ -93,16 +93,7 @@ namespace Foldrengesek2026.Controllers
         // LIMIT 3
         public IActionResult Feladat6()
         {
-            var results = _context.Naplok
-                .Where(n => n.Intenzitas > 3)
-                .GroupBy(n => n.Datum.Year)
-                .Select(g => new Feladat6ViewModel
-                {
-                    Year = g.Key,
-                    Count = g.Count()
-                })
-                .OrderByDescending(g => g.Count)
-                .Take(3);
+            var results = _queries.Top3Ev_3nalNagyobbIntenzitassal();
 
             return View(results);
         }

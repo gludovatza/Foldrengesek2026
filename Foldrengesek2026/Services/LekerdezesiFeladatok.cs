@@ -63,5 +63,19 @@ namespace Foldrengesek2026.Services
                     x.Intenzitas <= 3.0m)
                 .OrderBy(x => x.Datum);
         }
+
+        public IQueryable<Feladat6ViewModel> Top3Ev_3nalNagyobbIntenzitassal()
+        {
+            return _context.Naplok
+                .Where(n => n.Intenzitas > 3.0m)
+                .GroupBy(n => n.Datum.Year)
+                .Select(g => new Feladat6ViewModel
+                {
+                    Year = g.Key,
+                    Count = g.Count()
+                })
+                .OrderByDescending(x => x.Count)
+                .Take(3);
+        }
     }
 }
