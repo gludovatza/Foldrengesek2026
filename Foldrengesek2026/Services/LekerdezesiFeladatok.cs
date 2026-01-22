@@ -44,5 +44,24 @@ namespace Foldrengesek2026.Services
                 .OrderByDescending(x => x.Magnitudo)
                 .FirstOrDefault();
         }
+
+        public IQueryable<Feladat5ViewModel> AligErzekelheto2022()
+        {
+            return _context.Naplok
+                .Join(_context.Telepulesek,
+                    naplo => naplo.TelepulesID,
+                    telepules => telepules.ID,
+                    (naplo, telepules) => new Feladat5ViewModel
+                    {
+                        Nev = telepules.Nev,
+                        Datum = naplo.Datum,
+                        Intenzitas = naplo.Intenzitas
+                    })
+                .Where(x =>
+                    x.Datum.Year == 2022 &&
+                    x.Intenzitas >= 2.0m &&
+                    x.Intenzitas <= 3.0m)
+                .OrderBy(x => x.Datum);
+        }
     }
 }

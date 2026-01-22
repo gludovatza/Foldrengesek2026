@@ -80,18 +80,7 @@ namespace Foldrengesek2026.Controllers
         // ORDER BY datum
         public IActionResult Feladat5()
         {
-            var results = _context.Telepulesek
-                .Join(_context.Naplok,
-                        telepules => telepules.ID,
-                        naplo => naplo.TelepulesID,
-                        (telepules, naplo) => new Feladat5ViewModel
-                        {
-                            Nev = telepules.Nev,
-                            Datum = naplo.Datum,
-                            Intenzitas = naplo.Intenzitas
-                        })
-                .Where(j => j.Datum.Year == 2022 && j.Intenzitas >= 2 && j.Intenzitas <= 3)
-                .OrderBy(j => j.Datum);
+            var results = _queries.AligErzekelheto2022();
 
             return View(results);
         }
