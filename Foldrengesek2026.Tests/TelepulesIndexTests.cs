@@ -93,5 +93,71 @@ namespace Foldrengesek2026.Tests
             // Negatív ellenőrzés: ne csússzon be pl. Siófok
             Assert.DoesNotContain(list, t => t.Nev == "Siófok");
         }
+
+        // --------------------------------------------------------------------
+        // LAPOZÁS TESZT: pageSize=10 a Controller-ben.
+        // Ellenőrizzük:
+        // - page=1 és page=2 nem fedik le egymást (stabil rendezés miatt)
+        // - ViewData["CurrentPage"], ["TotalPages"], ["TotalCount"] adatai helyesek
+        // --------------------------------------------------------------------
+        [Fact]
+        public async Task Index_Pagination_Page1_Page2_DoNotOverlap_AndViewDataAreCorrect()
+        {
+            // Arrange
+            var ctx = TestDbFactory.CreateContext(nameof(Index_Pagination_Page1_Page2_DoNotOverlap_AndViewDataAreCorrect));
+            SeedTelepulesek(ctx);
+
+            var controller = new TelepulesController(ctx);
+
+            //// Act
+            //var res1 = await controller.Index(nev: null, varmegye: null, page: 1, sort: "nev", dir: "asc");
+            //var vr1 = Assert.IsType<ViewResult>(res1);
+            //var page1 = Assert.IsAssignableFrom<List<Telepules>>(vr1.Model);
+
+            //var res2 = await controller.Index(nev: null, varmegye: null, page: 2, sort: "nev", dir: "asc");
+            //var vr2 = Assert.IsType<ViewResult>(res2);
+            //var page2 = Assert.IsAssignableFrom<List<Telepules>>(vr2.Model);
+
+            //// Assert: 25 elem van összesen, pageSize=10 -> totalPages=3
+            //Assert.Equal(25, (int)vr1.ViewData["TotalCount"]!);
+            //Assert.Equal(3, (int)vr1.ViewData["TotalPages"]!);
+            //Assert.Equal(1, (int)vr1.ViewData["CurrentPage"]!);
+
+            //Assert.Equal(25, (int)vr2.ViewData["TotalCount"]!);
+            //Assert.Equal(3, (int)vr2.ViewData["TotalPages"]!);
+            //Assert.Equal(2, (int)vr2.ViewData["CurrentPage"]!);
+
+            // Act - Page 1 (külön controller)
+            var controller1 = new TelepulesController(ctx);
+            var res1 = await controller1.Index(nev: null, varmegye: null, page: 1, sort: "nev", dir: "asc");
+            var vr1 = Assert.IsType<ViewResult>(res1);
+            var page1 = Assert.IsAssignableFrom<List<Telepules>>(vr1.Model);
+
+            // Assert ViewData page1 MIELŐTT jön a page2
+            Assert.Equal(25, (int)vr1.ViewData["TotalCount"]!);
+            Assert.Equal(3, (int)vr1.ViewData["TotalPages"]!);
+            Assert.Equal(1, (int)vr1.ViewData["CurrentPage"]!);
+
+            // Act - Page 2 (másik controller)
+            var controller2 = new TelepulesController(ctx);
+            var res2 = await controller2.Index(nev: null, varmegye: null, page: 2, sort: "nev", dir: "asc");
+            var vr2 = Assert.IsType<ViewResult>(res2);
+            var page2 = Assert.IsAssignableFrom<List<Telepules>>(vr2.Model);
+
+            // Assert ViewData page2
+            Assert.Equal(25, (int)vr2.ViewData["TotalCount"]!);
+            Assert.Equal(3, (int)vr2.ViewData["TotalPages"]!);
+            Assert.Equal(2, (int)vr2.ViewData["CurrentPage"]!);
+
+            // Page méretek: 10 és 10 (a 3. oldal lesz 5)
+            Assert.Equal(10, page1.Count);
+            Assert.Equal(10, page2.Count);
+            //Assert.Equal(5, (int)vr2.ViewData["TotalCount"]! - page1.Count - page2.Count);
+
+            // Ne legyen átfedés (Skip/Take + determinisztikus rendezés miatt)
+            var ids1 = page1.Select(x => x.ID).ToHashSet();
+            var ids2 = page2.Select(x => x.ID).ToHashSet();
+            Assert.Empty(ids1.Intersect(ids2));
+        }
     }
 }
