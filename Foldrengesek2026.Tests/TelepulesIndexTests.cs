@@ -1,4 +1,5 @@
-﻿using Foldrengesek2026.Data;
+﻿using Foldrengesek2026.Controllers;
+using Foldrengesek2026.Data;
 using Foldrengesek2026.Models;
 using Microsoft.AspNetCore.Mvc;
 using System;
@@ -60,5 +61,37 @@ namespace Foldrengesek2026.Tests
             return model;
         }
 
+        // --------------------------------------------------------------------
+        // SZŰRÉS TESZT: nev + varmegye egyszerre
+        // TelepulesController-ben: Where(p => p.Nev!.ToLower().Contains(nev.ToLower()))
+        // és ugyanez Varmegye-re.
+        // --------------------------------------------------------------------
+        [Fact]
+        public async Task Index_Filter_NevAndVarmegye_ReturnsOnlyMatchingItems()
+        {
+            // Arrange
+            var ctx = TestDbFactory.CreateContext(nameof(Index_Filter_NevAndVarmegye_ReturnsOnlyMatchingItems));
+            SeedTelepulesek(ctx);
+
+            var controller = new TelepulesController(ctx);
+
+            // Act
+            // nev: "kapos" -> Kaposvár, Kaposfő, Kaposkeresztúr, Kaposmérő, Kaposújlak
+            // varmegye: "Somogy"
+            var result = await controller.Index(nev: "kapos", varmegye: "somogy", page: 1, sort: "nev", dir: "asc");
+            var list = ExtractModelList(result);
+
+            // Assert
+            Assert.NotEmpty(list);
+
+            // Mind Somogy
+            Assert.All(list, t => Assert.Equal("Somogy", t.Varmegye));
+
+            // Mind tartalmazza a "kapos" részt (case-insensitive)
+            Assert.All(list, t => Assert.Contains("kapos", t.Nev!, StringComparison.OrdinalIgnoreCase));
+
+            // Negatív ellenőrzés: ne csússzon be pl. Siófok
+            Assert.DoesNotContain(list, t => t.Nev == "Siófok");
+        }
     }
 }
