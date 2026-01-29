@@ -159,5 +159,51 @@ namespace Foldrengesek2026.Tests
             var ids2 = page2.Select(x => x.ID).ToHashSet();
             Assert.Empty(ids1.Intersect(ids2));
         }
+
+        // --------------------------------------------------------------------
+        // RENDEZÉS TESZT: sort + dir váltás a Controller-ben.
+        // Ellenőrizzünk két tipikus esetet:
+        //  1. eset: név szerint csökkenő
+        //  2. eset: vármegye szerint növekvő
+        // --------------------------------------------------------------------
+        [Fact]
+        public async Task Index_Sorting_Works_ForNevDesc_AndVarmegyeAsc()
+        {
+            // Arrange
+            var ctx = TestDbFactory.CreateContext(nameof(Index_Sorting_Works_ForNevDesc_AndVarmegyeAsc));
+            SeedTelepulesek(ctx);
+
+            var controller = new TelepulesController(ctx);
+
+            // 1. eset: Név DESC
+            var resA = await controller.Index(nev: null, varmegye: null, page: 1, sort: "nev", dir: "desc");
+            var vrA = Assert.IsType<ViewResult>(resA);
+            var listA = Assert.IsAssignableFrom<List<Telepules>>(vrA.Model);
+
+            Assert.Equal("nev", vrA.ViewData["CurrentSort"]?.ToString());
+            Assert.Equal("desc", vrA.ViewData["CurrentDir"]?.ToString());
+
+            for (int i = 0; i < listA.Count - 1; i++)
+            {
+                var a = listA[i].Nev!;
+                var b = listA[i + 1].Nev!;
+                Assert.True(string.Compare(a, b, StringComparison.CurrentCulture) >= 0, $"Hibás név DESC: '{a}' nem >= '{b}'");
+            }
+
+            // 2. eset: Vármegye ASC
+            var resB = await controller.Index(nev: null, varmegye: null, page: 1, sort: "varmegye", dir: "asc");
+            var vrB = Assert.IsType<ViewResult>(resB);
+            var listB = Assert.IsAssignableFrom<List<Telepules>>(vrB.Model);
+
+            Assert.Equal("varmegye", vrB.ViewData["CurrentSort"]?.ToString());
+            Assert.Equal("asc", vrB.ViewData["CurrentDir"]?.ToString());
+
+            for (int i = 0; i < listB.Count - 1; i++)
+            {
+                var a = listB[i].Varmegye!;
+                var b = listB[i + 1].Varmegye!;
+                Assert.True(string.Compare(a, b, StringComparison.CurrentCulture) <= 0, $"Hibás vármegye ASC: '{a}' nem <= '{b}'");
+            }
+        }
     }
 }
