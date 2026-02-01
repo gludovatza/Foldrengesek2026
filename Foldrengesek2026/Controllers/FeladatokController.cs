@@ -1,6 +1,7 @@
 ﻿using Foldrengesek2026.Data;
 using Foldrengesek2026.Services;
 using Foldrengesek2026.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Mysqlx.Crud;
@@ -10,6 +11,7 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace Foldrengesek2026.Controllers
 {
+    [Authorize]
     public class FeladatokController : Controller
     {
         private readonly FoldrengesContext _context;

@@ -99,6 +99,7 @@ namespace Foldrengesek2026.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
+        [Authorize]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("ID,Nev,Varmegye")] Telepules telepules)
         {
@@ -131,6 +132,7 @@ namespace Foldrengesek2026.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
+        [Authorize]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("ID,Nev,Varmegye")] Telepules telepules)
         {
@@ -163,6 +165,7 @@ namespace Foldrengesek2026.Controllers
         }
 
         // GET: Telepules/Delete/5
+        [Authorize]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -182,6 +185,7 @@ namespace Foldrengesek2026.Controllers
 
         // POST: Telepules/Delete/5
         [HttpPost, ActionName("Delete")]
+        [Authorize]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {

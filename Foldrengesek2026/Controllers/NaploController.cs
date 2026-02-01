@@ -1,15 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Foldrengesek2026.Data;
+using Foldrengesek2026.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using Foldrengesek2026.Data;
-using Foldrengesek2026.Models;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace Foldrengesek2026.Controllers
 {
+    [Authorize]
     public class NaploController : Controller
     {
         private readonly FoldrengesContext _context;
@@ -20,6 +22,7 @@ namespace Foldrengesek2026.Controllers
         }
 
         // GET: Naplo
+        [AllowAnonymous]
         public async Task<IActionResult> Index(DateTime? datum, int? telepulesid, int page = 1, string sort = "datum", string dir = "asc")
         {
             var foldrengesek = _context.Naplok.Include(n => n.Telepules).AsQueryable();
@@ -78,6 +81,7 @@ namespace Foldrengesek2026.Controllers
         }
 
         // GET: Naplo/Details/5
+        [AllowAnonymous]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
