@@ -1,13 +1,14 @@
 using Foldrengesek2026.Data;
 using Foldrengesek2026.Services;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Foldrengesek2026
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
@@ -20,11 +21,12 @@ namespace Foldrengesek2026
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlite(builder.Configuration.GetConnectionString("IdentityConnection")));
 
-            builder.Services.AddDefaultIdentity<IdentityUser>(options =>
+            builder.Services.AddIdentity<IdentityUser, IdentityRole>(options =>
             {
                 options.SignIn.RequireConfirmedAccount = false;
             })
-            .AddEntityFrameworkStores<ApplicationDbContext>();
+            .AddEntityFrameworkStores<ApplicationDbContext>()
+            .AddDefaultTokenProviders();
 
             builder.Services.AddRazorPages(); // Identity UI-hoz kell
 
@@ -54,6 +56,8 @@ namespace Foldrengesek2026
                 pattern: "{controller=Home}/{action=Index}/{id?}");
 
             app.MapRazorPages();
+
+            await IdentitySeed.SeedAsync(app.Services);
 
             app.Run();
         }

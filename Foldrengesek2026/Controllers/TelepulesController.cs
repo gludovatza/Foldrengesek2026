@@ -21,6 +21,7 @@ namespace Foldrengesek2026.Controllers
         }
 
         // GET: Telepules
+        [AllowAnonymous]
         public async Task<IActionResult> Index(string? nev, string? varmegye, int page = 1, string sort = "nev", string dir = "asc")
         {
             var telepulesek = _context.Telepulesek.AsQueryable();
@@ -70,6 +71,7 @@ namespace Foldrengesek2026.Controllers
         }
 
         // GET: Telepules/Details/5
+        [AllowAnonymous]
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -88,8 +90,8 @@ namespace Foldrengesek2026.Controllers
         }
 
         // GET: Telepules/Create
-        // CSAK BEJELENTKEZVE
-        [Authorize]
+        // CSAK BEJELENTKEZVE: User vagy Admin szerepkörben
+        [Authorize(Roles = "User,Admin")]
         public IActionResult Create()
         {
             return View();
@@ -99,7 +101,7 @@ namespace Foldrengesek2026.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [Authorize]
+        [Authorize(Roles = "User,Admin")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("ID,Nev,Varmegye")] Telepules telepules)
         {
@@ -113,6 +115,7 @@ namespace Foldrengesek2026.Controllers
         }
 
         // GET: Telepules/Edit/5
+        [Authorize(Roles = "User,Admin")]
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -132,7 +135,7 @@ namespace Foldrengesek2026.Controllers
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
-        [Authorize]
+        [Authorize(Roles = "User,Admin")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("ID,Nev,Varmegye")] Telepules telepules)
         {
@@ -165,7 +168,7 @@ namespace Foldrengesek2026.Controllers
         }
 
         // GET: Telepules/Delete/5
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -185,7 +188,7 @@ namespace Foldrengesek2026.Controllers
 
         // POST: Telepules/Delete/5
         [HttpPost, ActionName("Delete")]
-        [Authorize]
+        [Authorize(Roles = "Admin")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
